@@ -9,6 +9,9 @@ import {
 import {
   addScreenshotListener,
   removeScreenshotListener,
+  addScreenRecordListener,
+  removeScreenRecordListener,
+  isRecordingScreen,
 } from 'react-native-detector';
 
 export default function App() {
@@ -31,12 +34,21 @@ export default function App() {
     const userDidScreenshot = () => {
       setScreenshotCounter((screenshotCounter) => screenshotCounter + 1);
     };
+
+    const userStartedRecording = (record: any) => {
+      console.log(
+        'userStartedRecording userStartedRecording userStartedRecording ',
+        record
+      );
+    };
     const eventEmitter = addScreenshotListener(userDidScreenshot);
+    const eventEmitter1 = addScreenRecordListener(userStartedRecording);
     return () => {
       removeScreenshotListener(eventEmitter);
+      removeScreenRecordListener(eventEmitter1);
     };
   }, []);
-
+  console.log('isRecordingScreen ============ ', isRecordingScreen());
   return (
     <View style={styles.container}>
       <Text>User took {screenshotCounter} screenshot</Text>
