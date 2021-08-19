@@ -24,7 +24,7 @@ RCT_EXPORT_METHOD(preventScreenCapture) {
   if (self = [super init]) {
     CGFloat boundLength = MAX([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     _blockView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, boundLength, boundLength)];
-    _blockView.backgroundColor = [UIColor colorWithRed:253/255 green:251/255 blue:249/255 alpha:1];
+    _blockView.backgroundColor = UIColor.whiteColor;
   }
   return self;
 }
