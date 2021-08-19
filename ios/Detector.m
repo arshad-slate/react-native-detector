@@ -1,12 +1,34 @@
 #import "Detector.h"
 
-@implementation Detector
+@implementation Detector {
+    UIView *_blockView;
+}
 
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(isRecordingScreen) {
     return @([self isRecording]);
 }
+
+RCT_EXPORT_METHOD(preventScreenCapture) {
+    if (@available(iOS 11.0, *) ) {
+      // If already recording, block it
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [self preventScreenRecording];
+      });
+
+    }
+}
+
+- (instancetype)init {
+  if (self = [super init]) {
+    CGFloat boundLength = MAX([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
+    _blockView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, boundLength, boundLength)];
+    _blockView.backgroundColor = [UIColor colorWithRed:253/255 green:251/255 blue:249/255 alpha:1];
+  }
+  return self;
+}
+
 - (NSArray<NSString *> *)supportedEvents {
     return @[@"UIApplicationUserDidTakeScreenshotNotification", @"UIScreenCapturedDidChangeNotification"];
 }
@@ -39,6 +61,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(isRecordingScreen) {
 }
 
 - (void)sendScreenRecordNotificationToRN:(NSNotification *)notification {
+    [self preventScreenRecording];
     [self sendEventWithName:notification.name
                        body:@{@"isRecording": @([self isRecording])}];
 }
@@ -53,4 +76,15 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(isRecordingScreen) {
     }
 }
 
+- (void)preventScreenRecording {
+  if (@available(iOS 11.0, *)) {
+    BOOL isCaptured = [[UIScreen mainScreen] isCaptured];
+
+    if (isCaptured) {
+      [UIApplication.sharedApplication.keyWindow.subviews.firstObject addSubview:_blockView];
+    } else {
+      [_blockView removeFromSuperview];
+    }
+  }
+}
 @end

@@ -12,6 +12,7 @@ import {
   addScreenRecordListener,
   removeScreenRecordListener,
   isRecordingScreen,
+  preventScreenRecord,
 } from 'react-native-detector';
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
         record
       );
     };
+    preventScreenRecord();
     const eventEmitter = addScreenshotListener(userDidScreenshot);
     const eventEmitter1 = addScreenRecordListener(userStartedRecording);
     return () => {

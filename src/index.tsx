@@ -42,3 +42,8 @@ export function isRecordingScreen() {
   return Detector.isRecordingScreen();
   // if (Platform.OS === 'android') Detector.stopScreenshotDetection();
 }
+
+export function preventScreenRecord() {
+  Detector.preventScreenCapture();
+  // if (Platform.OS === 'android') Detector.stopScreenshotDetection();
+}
