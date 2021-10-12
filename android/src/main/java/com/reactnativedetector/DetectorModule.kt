@@ -1,10 +1,11 @@
 package com.reactnativedetector
 
+import android.app.Activity
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.modules.core.DeviceEventManagerModule
-
+import java.lang.ref.WeakReference
 
 
 class DetectorModule(val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), ScreenshotDetectionListener {
@@ -21,6 +22,16 @@ class DetectorModule(val reactContext: ReactApplicationContext) : ReactContextBa
     @ReactMethod
     fun stopScreenshotDetection() {
         screenshotDetectionDelegate.stopScreenshotDetection()
+    }
+
+    @ReactMethod
+    fun allowScreenRecording() {
+        screenshotDetectionDelegate.allowScreenRecording(WeakReference<Activity>(currentActivity))
+    }
+
+    @ReactMethod
+    fun blockScreenRecording() {
+        screenshotDetectionDelegate.blockScreenRecording(WeakReference<Activity>(currentActivity))
     }
 
     override fun onScreenCaptured(path: String) {
