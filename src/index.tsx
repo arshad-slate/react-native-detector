@@ -10,7 +10,7 @@ enum EventsName {
 const isiOS = Platform.OS === 'ios'
 
 export function addScreenshotListener(callback: Function) {
-  if (Platform.OS === 'android') Detector.startScreenshotDetection();
+  if (!isiOS) Detector.startScreenshotDetection();
   const eventEmitter = new NativeEventEmitter(Detector);
   eventEmitter.addListener(
     EventsName.UserDidTakeScreenshot,
@@ -30,7 +30,7 @@ export function addScreenRecordListener(
   callback: (msgObj: { isRecording: boolean }) => void
 ) {
   // Prevents screen record.
-  if (Platform.OS === 'android') preventScreenRecord();
+  if (!isiOS) preventScreenRecord();
   const eventEmitter = new NativeEventEmitter(Detector);
   eventEmitter.addListener(EventsName.ScreenCapturedDidChange, callback, {});
 
