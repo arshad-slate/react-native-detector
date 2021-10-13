@@ -39,7 +39,7 @@ export function removeScreenRecordListener(eventEmitter: NativeEventEmitter) {
 }
 
 export function isRecordingScreen() {
-   (Platform.OS === 'android')? null : Detector.isRecordingScreen();
+   return (Platform.OS === 'android')? null : Detector.isRecordingScreen();
 }
 
 export function preventScreenRecord() {
