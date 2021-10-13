@@ -6,7 +6,6 @@ enum EventsName {
   ScreenCapturedDidChange = 'UIScreenCapturedDidChangeNotification',
 }
 
-
 export function addScreenshotListener(callback: Function) {
   if (Platform.OS === 'android') Detector.startScreenshotDetection();
   const eventEmitter = new NativeEventEmitter(Detector);
