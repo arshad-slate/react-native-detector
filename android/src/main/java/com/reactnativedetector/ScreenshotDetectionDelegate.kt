@@ -1,15 +1,20 @@
 package com.reactnativedetector
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
-import android.view.WindowManager
+import android.content.pm.PackageManager
+import android.Manifest.permission
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.app.Activity
 import androidx.core.content.ContextCompat
+import android.database.Cursor
+import android.util.Log
+import android.view.WindowManager
+import java.lang.Exception
 import java.lang.ref.WeakReference
 
 
@@ -40,12 +45,16 @@ class ScreenshotDetectionDelegate(val context: Context, val listener: Screenshot
   }
 
   fun stopScreenshotDetection() {
-    context.contentResolver.unregisterContentObserver(contentObserver)
+    context.getContentResolver().unregisterContentObserver(contentObserver)
     isListening = false
   }
 
   private fun onScreenCaptured(path: String) {
     listener.onScreenCaptured(path)
+  }
+
+  private fun onScreenCapturedWithDeniedPermission() {
+    listener.onScreenCapturedWithDeniedPermission()
   }
 
   fun blockScreenRecording(activityWeakReference: WeakReference<Activity>) {
@@ -66,10 +75,6 @@ class ScreenshotDetectionDelegate(val context: Context, val listener: Screenshot
         // Nothing to do here.
       }
     }
-  }
-
-  private fun onScreenCapturedWithDeniedPermission() {
-    listener.onScreenCapturedWithDeniedPermission()
   }
 
   private fun isScreenshotPath(path: String?): Boolean {
