@@ -1,16 +1,14 @@
-import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
-
-const {Detector} = NativeModules;
+import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+const { Detector } = NativeModules;
 
 enum EventsName {
   UserDidTakeScreenshot = 'UIApplicationUserDidTakeScreenshotNotification',
   ScreenCapturedDidChange = 'UIScreenCapturedDidChangeNotification',
 }
 
-const isiOS = Platform.OS === 'ios'
 
 export function addScreenshotListener(callback: Function) {
-  if (!isiOS) Detector.startScreenshotDetection();
+  if (Platform.OS === 'android') Detector.startScreenshotDetection();
   const eventEmitter = new NativeEventEmitter(Detector);
   eventEmitter.addListener(
     EventsName.UserDidTakeScreenshot,
@@ -23,14 +21,13 @@ export function addScreenshotListener(callback: Function) {
 
 export function removeScreenshotListener(eventEmitter: NativeEventEmitter) {
   eventEmitter.removeAllListeners(EventsName.UserDidTakeScreenshot);
-  if (!isiOS) Detector.stopScreenshotDetection();
+  if (Platform.OS === 'android') Detector.stopScreenshotDetection();
 }
 
 export function addScreenRecordListener(
   callback: (msgObj: { isRecording: boolean }) => void
 ) {
-  // Prevents screen record.
-  if (!isiOS) preventScreenRecord();
+  if (Platform.OS === 'android') Detector.blockScreenRecording();
   const eventEmitter = new NativeEventEmitter(Detector);
   eventEmitter.addListener(EventsName.ScreenCapturedDidChange, callback, {});
 
@@ -39,29 +36,17 @@ export function addScreenRecordListener(
 
 export function removeScreenRecordListener(eventEmitter: NativeEventEmitter) {
   eventEmitter.removeAllListeners(EventsName.ScreenCapturedDidChange);
-  // Allows screen record.
-  if (!isiOS) Detector.allowScreenRecord();
+  if (Platform.OS === 'android') Detector.allowScreenRecording();
 }
 
 export function isRecordingScreen() {
-  
-  return isiOS ? 
-    Detector.isRecordingScreen() 
-    :
-    // Always returns null for android.
-    null;
+   (Platform.OS === 'android')? null : Detector.isRecordingScreen();
 }
 
 export function preventScreenRecord() {
-  isiOS ? 
-    // ios screen capture prevention.
-    Detector.preventScreenCapture() 
-    :
-    // Makes android screen recording blank.
-    Detector.blockScreenRecording();
-
+   (Platform.OS === 'ios')? Detector.preventScreenCapture(): Detector.blockScreenRecording();
 }
 
 export function allowScreenRecord() {
-  if (!isiOS) Detector.allowScreenRecording();
+  if (Platform.OS === 'android') Detector.allowScreenRecording();
 }
