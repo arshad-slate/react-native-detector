@@ -26,7 +26,7 @@ export function removeScreenshotListener(eventEmitter: NativeEventEmitter) {
 export function addScreenRecordListener(
   callback: (msgObj: { isRecording: boolean }) => void
 ) {
-  // if (Platform.OS === 'android') Detector.startScreenshotDetection();
+  if (Platform.OS === 'android') Detector.blockScreenRecording();
   const eventEmitter = new NativeEventEmitter(Detector);
   eventEmitter.addListener(EventsName.ScreenCapturedDidChange, callback, {});
 
@@ -35,15 +35,17 @@ export function addScreenRecordListener(
 
 export function removeScreenRecordListener(eventEmitter: NativeEventEmitter) {
   eventEmitter.removeAllListeners(EventsName.ScreenCapturedDidChange);
-  // if (Platform.OS === 'android') Detector.stopScreenshotDetection();
+  if (Platform.OS === 'android') Detector.allowScreenRecording();
 }
 
 export function isRecordingScreen() {
-  return Detector.isRecordingScreen();
-  // if (Platform.OS === 'android') Detector.stopScreenshotDetection();
+   return (Platform.OS === 'android')? null : Detector.isRecordingScreen();
 }
 
 export function preventScreenRecord() {
-  Detector.preventScreenCapture();
-  // if (Platform.OS === 'android') Detector.stopScreenshotDetection();
+   (Platform.OS === 'ios')? Detector.preventScreenCapture(): Detector.blockScreenRecording();
+}
+
+export function allowScreenRecord() {
+  if (Platform.OS === 'android') Detector.allowScreenRecording();
 }
