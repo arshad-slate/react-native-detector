@@ -82,6 +82,9 @@ RCT_EXPORT_METHOD(preventScreenCapture) {
 
     if (isCaptured) {
       [UIApplication.sharedApplication.keyWindow.subviews.firstObject addSubview:_blockView];
+        [NSTimer scheduledTimerWithTimeInterval:1.5 repeats:NO block:^(NSTimer * _Nonnull timer) {
+            [self->_blockView removeFromSuperview];
+        }] ;
     } else {
       [_blockView removeFromSuperview];
     }
